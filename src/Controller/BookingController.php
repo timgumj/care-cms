@@ -14,7 +14,7 @@ final class BookingController extends AbstractController
   if(!is_string($date)||!is_string($type))throw $this->createNotFoundException();
   $error=null;
   if($r->isMethod('POST')) {
-   if(!$this->isCsrfTokenValid('booking',$r->request->getString('_token')))throw $this->createAccessDeniedException('Invalid form token.');
+   if(!$this->isCsrfTokenValid('booking',$r->request->getString('_token')))throw new \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException('Invalid form token.');
    if(!$limiter->create((string)$r->getClientIp())->consume()->isAccepted())return new Response('Too many requests. Please wait 15 minutes.',429,['Retry-After'=>'900']);
    try {
     if($r->request->getString('consent')!=='yes')throw new \DomainException('Please acknowledge this is a fictional demo.');
@@ -34,7 +34,7 @@ final class BookingController extends AbstractController
  public function cancel(string $token,Request $r,BookingService $booking): Response {
   $item=$booking->cancellation($token);if(!$item)throw $this->createNotFoundException('Cancellation link expired or already used.');
   if($r->isMethod('POST')) {
-   if(!$this->isCsrfTokenValid('cancel_'.$token,$r->request->getString('_token')))throw $this->createAccessDeniedException();
+   if(!$this->isCsrfTokenValid('cancel_'.$token,$r->request->getString('_token')))throw new \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException('Invalid form token.');
    $booking->cancel($token);$this->addFlash('success','Demo appointment cancelled. / Demo-Termin storniert.');return $this->redirectToRoute('booking');
   }
   return $this->render('booking/cancel.html.twig',['token'=>$token,'item'=>$item],new Response(headers:['Cache-Control'=>'no-store','Referrer-Policy'=>'no-referrer','X-Robots-Tag'=>'noindex']));
