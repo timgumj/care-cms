@@ -1,0 +1,11 @@
+parameters:
+    env(DEFAULT_URI): 'http://127.0.0.1:8010'
+
+framework:
+    router:
+        default_uri: '%env(DEFAULT_URI)%'
+
+when@prod:
+    framework:
+        router:
+            strict_requirements: null

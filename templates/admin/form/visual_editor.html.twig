@@ -1,0 +1,8 @@
+{% block visual_editor_widget %}
+<div class="pm-editor-field" data-pm-editor data-recovery-field="{{ form.vars.name }}" data-recovery-user="{{ app.user.id|default(0) }}" data-recovery-kind="{{ form.parent.vars.data.kind|default('Seite') == 'Beitrag' ? 'post' : 'page' }}" data-canvas-url="{{ path('admin_editor_canvas_assets') }}" data-upload-url="{{ path('admin_editor_upload') }}" data-media-url="{{ path('admin_editor_media') }}" data-ui-locale="{{ app.request.locale|default('de') }}" data-content-locale="{{ form.parent.vars.data.locale|default('de-AT') }}" data-page-id="{{ form.parent.vars.data.id|default(0) }}" data-upload-token="{{ csrf_token('editor_upload') }}" data-body-class="{{ form.parent.vars.data.bodyClass|default('') }}">
+    <p class="pm-editor-intro">{{ "Text direkt bearbeiten, Bausteine verschieben und Zeilen mit Spalten hinzufügen. Änderungen werden mit „Speichern“ auf dieser Seite übernommen."|trans }}</p>
+    <p class="pm-editor-intro">{{ "Der vorhandene Inhalt bleibt unverändert, solange Sie keine Änderungen vornehmen. Bearbeiten Sie die Fußzeile im eigenen Footer-Tab."|trans }}</p>
+    {{ block('textarea_widget') }}
+    <noscript>{{ "Für den visuellen Editor muss JavaScript aktiviert sein. Alternativ können Sie den HTML-Inhalt oben bearbeiten."|trans }}</noscript>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'admin/auth_base.html.twig' %}
+{% block title %}Care Studio · {{ 'Media library'|trans }}{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="/assets/media-library.css?v=12"><script src="/assets/media-library.js?v=1" defer></script>{% endblock %}
+{% block content %}
+<section class="media-library" data-media-library data-list-url="{{ path('admin_editor_media') }}" data-upload-url="{{ path('admin_editor_upload') }}" data-token="{{ csrf_token('editor_upload') }}" data-copy="{{ 'Copy image URL'|trans }}" data-copied="{{ 'Copied'|trans }}" data-failed="{{ 'The request failed. Please try again.'|trans }}" data-empty="{{ 'No images found.'|trans }}" data-uploaded="{{ 'Images uploaded. They are available in the visual editor.'|trans }}">
+<div class="media-heading"><div><h1>{{ 'Media library'|trans }}</h1><p>{{ 'Upload images here or choose them inside the visual editor. Files are stored on this website.'|trans }}</p></div><a href="{{ path('admin') }}">{{ 'Back to dashboard'|trans }}</a></div>
+<form data-media-upload><label for="media-files">{{ 'Upload images'|trans }}</label><input id="media-files" name="files[]" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple required><p class="hint">{{ 'JPG, PNG, WebP or GIF. Up to 10 images, 5 MB each.'|trans }}</p><button class="submit" type="submit">{{ 'Upload images'|trans }}</button></form>
+<label for="media-search">{{ 'Search images'|trans }}</label><input id="media-search" type="search" data-media-search autocomplete="off">
+<label for="media-folder">{{ 'Image folder'|trans }}</label><select id="media-folder" data-media-folder><option value="">{{ 'All images'|trans }}</option><option value="uploads/editor">{{ 'Your uploads'|trans }}</option><option value="uploads/library">{{ 'Imported originals'|trans }}</option><option value="optimized-images">{{ 'Website images'|trans }}</option></select>
+<p data-media-status role="status" aria-live="polite"></p><div class="media-grid" data-media-grid></div>
+</section>
+{% endblock %}

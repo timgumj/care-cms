@@ -1,0 +1,12 @@
+{% extends 'admin/auth_base.html.twig' %}
+{% block content %}
+<h1>{{ 'Anmelden'|trans }}</h1><p>{{ 'Melden Sie sich mit Ihrem Administratorkonto an.'|trans }}</p>
+{% for message in app.flashes('success') %}<p class="notice success" role="status">{{ message|trans }}</p>{% endfor %}
+{% if not email_2fa_enabled %}<p class="notice">{{ 'Email verification is not yet enabled locally. Mail delivery must be configured before activation.'|trans }}</p>{% endif %}
+{% if needs_setup %}<div class="notice"><strong>{{ 'Noch kein Administratorkonto vorhanden.'|trans }}</strong><p>{{ 'Erstellen Sie zuerst Ihr Konto und wählen Sie Ihr Passwort.'|trans }}</p><a class="primary-link" href="{{ path('app_admin_setup') }}">{{ 'Erstes Administratorkonto erstellen'|trans }}</a></div>{% endif %}
+{% if error %}<p class="notice error" role="alert">{% if needs_setup %}{{ 'Bitte erstellen Sie zuerst Ihr Administratorkonto.'|trans }}{% else %}{{ 'Anmeldung fehlgeschlagen. Bitte prüfen Sie Ihre E-Mail-Adresse und Ihr Passwort.'|trans }}{% endif %}</p>{% endif %}
+<form method="post" action="{{ path('app_login') }}"><label for="email">{{ 'E-Mail-Adresse'|trans }}</label><input id="email" type="email" name="_username" value="{{ last_username }}" required autocomplete="username" autocapitalize="none">
+<label for="password">{{ 'Passwort'|trans }}</label><div class="password-field"><input id="password" type="password" name="_password" required autocomplete="current-password"><button type="button" class="password-toggle" data-toggle-password aria-controls="password" aria-pressed="false" aria-label="{{ 'Passwort anzeigen'|trans }}">{{ 'Anzeigen'|trans }}</button></div>
+<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"><button class="submit" type="submit">{{ 'Anmelden'|trans }}</button></form>
+<p><a href="{{ path('app_forgot_password') }}">{{ 'Forgot password?'|trans }}</a></p>
+{% endblock %}

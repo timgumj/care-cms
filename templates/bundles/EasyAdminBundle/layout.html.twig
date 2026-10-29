@@ -1,0 +1,14 @@
+{% extends '@!EasyAdmin/layout.html.twig' %}
+{% block configured_stylesheets %}{{ parent() }}<link rel="stylesheet" href="/assets/admin-theme.css?v=12"><link rel="stylesheet" href="/assets/cms-toolbar.css?v=12"><link rel="stylesheet" href="/assets/cms-workspace.css?v=12">{% set saved=app.session.remove('_editor_saved_page') %}{% if saved %}<meta name="practice-editor-saved" content="{{ saved|merge({user:app.user.id})|json_encode }}">{% endif %}{% endblock %}
+{% block body_attr %}{{ parent() }} data-cms-backend="true"{% endblock %}
+{% block header_custom_menu_wrapper %}{% endblock %}
+{% block body_class %}{{ parent() }} cms-backend cms-has-toolbar{% endblock %}
+{% block wrapper_wrapper %}{% include 'admin/_toolbar.html.twig' with {backend:true} %}{{ parent() }}{% endblock %}
+{% block header_logo %}<a class="cms-sidebar-brand" href="{{ path('admin') }}"><span class="cms-brand-square">C</span><span>Care CMS<small>{{ app.request.locale starts with 'en' ? 'Website workspace' : 'Website-Verwaltung' }}</small></span></a>{% endblock %}
+{% block main_menu_wrapper %}{% include 'admin/_sidebar_links.html.twig' %}{% endblock %}
+
+
+{% block configured_javascripts %}{{ parent() }}<script src="/assets/admin-session.js?v=1" defer></script><script src="/assets/cms-workspace.js?v=1" defer></script>{% endblock %}
+{% block body_javascript %}{{ parent() }}
+<form id="admin-logout-form" action="{{ path('app_logout') }}" method="post" hidden><input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}"></form>
+{% endblock %}

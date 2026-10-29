@@ -1,0 +1,26 @@
+/vendor/
+/var/*
+!/var/.gitkeep
+/.env.local
+/.env.*.local
+/.env.local.php
+/public/bundles/
+/public/uploads/*
+!/public/uploads/.htaccess
+/node_modules/
+*.db
+*.sqlite*
+*.sql
+*.log
+
+/public/_ui-*.html
+
+# Private keys and local editor/OS files
+*.pem
+*.key
+*.p12
+*.pfx
+/.vscode/
+/.idea/
+.DS_Store
+Thumbs.db

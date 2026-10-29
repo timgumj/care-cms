@@ -1,0 +1,31 @@
+name: Verify CMS demo
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.2', '8.3', '8.4']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: pdo_sqlite, mbstring, dom, gd, intl, fileinfo
+          tools: composer:v2
+          coverage: none
+      - run: composer validate --strict
+      - run: composer install --no-interaction --prefer-dist
+      - run: php bin/setup.php
+      - run: php bin/console lint:yaml config
+      - run: php bin/console lint:twig templates
+      - run: php bin/console lint:container
+      - run: php tests/run.php
+      - name: HTTP smoke checks
+        run: |
+          php -S 127.0.0.1:8020 -t public bin/router.php > var/server.log 2>&1 &
+          sleep 2
+          php tests/http.php
+      - run: composer audit --locked

@@ -1,0 +1,11 @@
+{% extends 'admin/auth_base.html.twig' %}
+{% block title %}Care Studio · {{ 'Edit account'|trans }}{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="/assets/users.css?v=12">{% endblock %}
+{% block content %}<section class="users-admin"><h1>{{ 'Edit account'|trans }}</h1><p>{{ account.email }}</p>{% if error %}<p class="notice error" role="alert">{{ error|trans }}</p>{% endif %}
+<form method="post"><input type="hidden" name="_csrf_token" value="{{ csrf_token('user_edit_' ~ account.id) }}">
+<label for="displayName">{{ 'Name (optional)'|trans }}</label><input id="displayName" name="displayName" maxlength="120" value="{{ account.displayName }}">
+<label for="accessRole">{{ 'Role'|trans }}</label><select id="accessRole" name="accessRole"{% if own_account %} disabled{% endif %}><option value="ROLE_EDITOR"{% if account.accessRole == 'ROLE_EDITOR' %} selected{% endif %}>{{ 'Editor'|trans }}</option><option value="ROLE_ADMIN"{% if account.accessRole == 'ROLE_ADMIN' %} selected{% endif %}>{{ 'Administrator'|trans }}</option></select>
+<label class="user-enabled"><input type="checkbox" name="enabled" value="1"{% if account.enabled %} checked{% endif %}{% if own_account %} disabled{% endif %}> {{ 'Account enabled'|trans }}</label>
+{% if own_account %}<input type="hidden" name="accessRole" value="ROLE_ADMIN"><input type="hidden" name="enabled" value="1"><p class="hint">{{ 'You cannot remove your own administrator access.'|trans }}</p>{% endif %}
+<p class="hint">{{ 'Disabling an account blocks sign-in. Role or status changes revoke its existing sessions and verification links.'|trans }}</p>
+<button type="submit" class="submit">{{ 'Save account'|trans }}</button></form><p><a href="{{ path('admin_users') }}">{{ 'Back to users'|trans }}</a></p></section>{% endblock %}

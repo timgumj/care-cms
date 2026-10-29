@@ -1,0 +1,1 @@
+{% if app.request.attributes.get('_admin_session_active') and is_granted('ROLE_EDITOR') %}{% include 'admin/_toolbar.html.twig' with {backend:false} %}{% endif %}

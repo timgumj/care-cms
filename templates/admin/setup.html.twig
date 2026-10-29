@@ -1,0 +1,9 @@
+{% extends 'admin/auth_base.html.twig' %}
+{% block title %}Care Studio · {{ 'Konto erstellen'|trans }}{% endblock %}
+{% block content %}<h1>{{ 'Administratorkonto erstellen'|trans }}</h1><p>{{ 'Diese einmalige Einrichtung ist nur lokal verfügbar. Danach können Sie sich mit Ihrem eigenen Konto anmelden.'|trans }}</p>
+{% if errors %}<div class="notice error" role="alert"><ul>{% for message in errors %}<li>{{ message|trans }}</li>{% endfor %}</ul></div>{% endif %}
+<form method="post" action="{{ path('app_admin_setup') }}"><label for="email">{{ 'E-Mail-Adresse'|trans }}</label><input id="email" name="email" type="email" value="{{ email }}" required autocomplete="username" autocapitalize="none" maxlength="180">
+<label for="password">{{ 'Passwort'|trans }}</label><p id="password-hint" class="hint">{{ 'Mindestens 14 Zeichen. Verwenden Sie ein langes, eigenes Passwort.'|trans }}</p><div class="password-field"><input id="password" name="password" type="password" required minlength="14" autocomplete="new-password" aria-describedby="password-hint"><button type="button" class="password-toggle" data-toggle-password aria-controls="password" aria-pressed="false" aria-label="{{ 'Passwort anzeigen'|trans }}">{{ 'Anzeigen'|trans }}</button></div>
+<label for="password-confirm">{{ 'Passwort wiederholen'|trans }}</label><div class="password-field"><input id="password-confirm" name="password_confirm" type="password" required minlength="14" autocomplete="new-password"><button type="button" class="password-toggle" data-toggle-password aria-controls="password-confirm" aria-pressed="false" aria-label="{{ 'Passwort anzeigen'|trans }}">{{ 'Anzeigen'|trans }}</button></div>
+<input type="hidden" name="_token" value="{{ csrf_token('setup_admin') }}"><button class="submit" type="submit">{{ 'Konto erstellen'|trans }}</button></form><a class="back" href="{{ path('app_login') }}">{{ 'Zur Anmeldung'|trans }}</a>
+{% endblock %}

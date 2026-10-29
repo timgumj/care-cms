@@ -1,0 +1,18 @@
+{% extends 'admin/auth_base.html.twig' %}
+{% block title %}Care Studio · {{ 'Session settings'|trans }}{% endblock %}
+{% block content %}
+<h1>{{ 'Session settings'|trans }}</h1>
+<p>{{ 'These limits apply to all administrators. Visitors can continue browsing the website.'|trans }}</p>
+{% for message in app.flashes('session_settings_saved') %}<p class="notice" role="status">{{ message|trans }}</p>{% endfor %}
+{% if error %}<p class="notice error" role="alert">{{ error|trans }}</p>{% endif %}
+<form method="post" action="{{ path('admin_session_settings') }}">
+<label for="idle_minutes">{{ 'Sign out after inactivity (minutes)'|trans }}</label>
+<input type="number" name="idle_minutes" id="idle_minutes" min="5" max="120" value="{{ settings.idle_minutes }}" required>
+<label for="maximum_hours">{{ 'Maximum session duration (hours)'|trans }}</label>
+<input type="number" name="maximum_hours" id="maximum_hours" min="1" max="24" value="{{ settings.maximum_hours }}" required>
+<p>{{ 'Changes apply on the next administrator request, including existing sessions. Unsaved edits may be lost when a session expires.'|trans }}</p>
+<input type="hidden" name="_csrf_token" value="{{ csrf_token('session_settings') }}">
+<button class="submit" type="submit">{{ 'Save settings'|trans }}</button>
+</form>
+<p><a href="{{ path('admin') }}">{{ 'Back to dashboard'|trans }}</a></p>
+{% endblock %}

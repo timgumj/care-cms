@@ -1,0 +1,1 @@
+<dl class="practice-hours-table">{% for day in (english ? ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'] : ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag']) %}<dt>{{ day }}</dt><dd>{{ loop.index<6 ? '09:00 – 17:00' : (english ? 'Closed' : 'Geschlossen') }}</dd>{% endfor %}</dl>

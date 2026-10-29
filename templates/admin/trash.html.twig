@@ -1,0 +1,5 @@
+{% extends 'admin/auth_base.html.twig' %}
+{% block title %}Care Studio · {{ 'Trash'|trans }}{% endblock %}
+{% block content %}<h1>{{ 'Trash'|trans }}</h1><p>{{ 'Items stay here until you restore or permanently delete them. Restored items return as drafts.'|trans }}</p>
+{% for page in pages %}<section class="trash-item"><h2>{{ page.title }}</h2><p>{{ page.locale }} · {{ page.kind == 'Beitrag' ? 'Article'|trans : 'Seite'|trans }}<br>{{ page.path }}</p><p><a href="{{ path('admin_content_action',{id:page.id,operation:'restore'}) }}">{{ 'Restore as draft'|trans }}</a></p>{% if is_granted('ROLE_ADMIN') %}<p><a class="content-trash-action" href="{{ path('admin_content_action',{id:page.id,operation:'purge'}) }}">{{ 'Delete permanently'|trans }}</a></p>{% endif %}</section>{% else %}<p>{{ 'Trash is empty.'|trans }}</p>{% endfor %}
+<p><a href="{{ path('admin') }}">{{ 'Back to dashboard'|trans }}</a></p>{% endblock %}

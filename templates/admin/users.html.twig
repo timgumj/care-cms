@@ -1,0 +1,16 @@
+{% extends 'admin/auth_base.html.twig' %}
+{% block title %}Care Studio · {{ 'Users'|trans }}{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="/assets/users.css?v=12">{% endblock %}
+{% block content %}<section class="users-admin"><h1>{{ 'Users'|trans }}</h1><p>{{ 'Administrators manage accounts and settings. Editors manage pages, articles, images and recoverable trash.'|trans }}</p>
+{% for message in app.flashes('users_notice') %}<p class="notice" role="status">{{ message|trans }}</p>{% endfor %}
+{% if error %}<p class="notice error" role="alert">{{ error|trans }}</p>{% endif %}
+<div class="users-table-wrap"><table><thead><tr><th>{{ 'Name / email'|trans }}</th><th>{{ 'Role'|trans }}</th><th>{{ 'Status'|trans }}</th><th>{{ 'Actions'|trans }}</th></tr></thead><tbody>{% for account in users %}<tr>
+<td><strong>{{ account.displayName ?: account.email }}</strong>{% if account.displayName %}<br>{{ account.email }}{% endif %}{% if account.id == app.user.id %}<br><small>{{ 'Your account'|trans }}</small>{% endif %}</td>
+<td>{{ (account.accessRole == 'ROLE_ADMIN' ? 'Administrator' : 'Editor')|trans }}</td><td>{{ (not account.enabled ? 'Disabled' : (not account.passwordSet ? 'Invitation pending' : 'Active'))|trans }}</td>
+<td><a href="{{ path('admin_user_edit',{id:account.id}) }}">{{ 'Edit account'|trans }}</a>{% if account.enabled and not account.passwordSet %}<form method="post" action="{{ path('admin_user_invitation',{id:account.id}) }}"><input type="hidden" name="_csrf_token" value="{{ csrf_token('user_invite_' ~ account.id) }}"><button type="submit">{{ 'Send invitation again'|trans }}</button></form>{% endif %}</td></tr>{% endfor %}</tbody></table></div>
+<h2>{{ 'Add user'|trans }}</h2><p>{{ 'The user chooses their own password through an email link. Login verification codes go to their own email address.'|trans }}</p>
+<form method="post" action="{{ path('admin_users') }}" class="user-create"><input type="hidden" name="_csrf_token" value="{{ csrf_token('user_create') }}">
+<label for="displayName">{{ 'Name (optional)'|trans }}</label><input id="displayName" name="displayName" maxlength="120" value="{{ values.name }}" autocomplete="off">
+<label for="email">{{ 'Email address'|trans }}</label><input id="email" name="email" type="email" maxlength="180" value="{{ values.email }}" required autocomplete="off">
+<label for="accessRole">{{ 'Role'|trans }}</label><select id="accessRole" name="accessRole"><option value="ROLE_EDITOR"{% if values.role == 'ROLE_EDITOR' %} selected{% endif %}>{{ 'Editor'|trans }}</option><option value="ROLE_ADMIN"{% if values.role == 'ROLE_ADMIN' %} selected{% endif %}>{{ 'Administrator'|trans }}</option></select>
+<button type="submit" class="submit">{{ 'Create account and send invitation'|trans }}</button></form><p><a href="{{ path('admin') }}">{{ 'Back to dashboard'|trans }}</a></p></section>{% endblock %}

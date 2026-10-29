@@ -1,0 +1,34 @@
+parameters:
+    env(PREVIEW_ENABLED): '0'
+    env(EMAIL_2FA_ENABLED): '0'
+    env(MAILER_DSN): 'null://null'
+    env(LOGIN_MAIL_FROM): ''
+framework:
+    session:
+        name: care_cms_session
+        cookie_httponly: true
+        cookie_secure: auto
+        cookie_samesite: lax
+        # Persistent cookie; server-side idle and absolute limits still govern access.
+        cookie_lifetime: 86400
+        # Retain inactive session files up to the largest selectable idle limit.
+        # AdminSessionSubscriber enforces the configured (usually shorter) limits.
+        gc_maxlifetime: 7200
+    rate_limiter:
+        booking: { cache_pool: app.security_limiter_cache, lock_factory: app.security_lock_factory, policy: sliding_window, limit: 5, interval: '15 minutes' }
+        password_reset_ip: { cache_pool: app.security_limiter_cache, lock_factory: app.security_lock_factory, policy: sliding_window, limit: 5, interval: '15 minutes' }
+        password_reset_account: { cache_pool: app.security_limiter_cache, lock_factory: app.security_lock_factory, policy: sliding_window, limit: 3, interval: '1 hour' }
+        editor_upload: { cache_pool: app.security_limiter_cache, lock_factory: app.security_lock_factory, policy: sliding_window, limit: 30, interval: '1 hour' }
+        email_code_send:
+            cache_pool: app.security_limiter_cache
+            lock_factory: app.security_lock_factory
+            policy: sliding_window
+            limit: 3
+            interval: '15 minutes'
+when@prod:
+    framework:
+        session:
+            cookie_secure: true
+            save_path: '%kernel.project_dir%/var/sessions/prod'
+        # Set your own anchored host patterns before deployment.
+        trusted_hosts: ['^localhost$', '^127\.0\.0\.1$']

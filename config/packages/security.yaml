@@ -1,0 +1,37 @@
+security:
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_EDITOR
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: auto
+    providers:
+        admins:
+            entity: { class: App\Entity\AdminUser, property: email }
+    firewalls:
+        main:
+            lazy: true
+            provider: admins
+            user_checker: App\Security\AccountChecker
+            login_throttling: { max_attempts: 5, interval: '15 minutes', cache_pool: app.security_limiter_cache, lock_factory: app.security_lock_factory }
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                enable_csrf: true
+                default_target_path: admin
+            two_factor:
+                auth_form_path: 2fa_login
+                check_path: 2fa_login_check
+                default_target_path: admin
+                prepare_on_login: true
+                enable_csrf: true
+            logout:
+                path: app_logout
+                target: app_login
+                enable_csrf: true
+    access_control:
+        - { path: ^/manage/(?:forgot-password|reset-password)$, roles: PUBLIC_ACCESS }
+        - { path: ^/manage/sign-out$, roles: PUBLIC_ACCESS }
+        - { path: ^/manage/logout$, roles: PUBLIC_ACCESS }
+        - { path: !php/const App\Security\AdminArea::LOGIN_PATTERN, roles: PUBLIC_ACCESS }
+        - { path: !php/const App\Security\AdminArea::SETUP_PATTERN, roles: PUBLIC_ACCESS }
+        - { path: !php/const App\Security\AdminArea::VERIFY_PATTERN, roles: IS_AUTHENTICATED_2FA_IN_PROGRESS }
+        - { path: !php/const App\Security\AdminArea::PATTERN, roles: ROLE_EDITOR }

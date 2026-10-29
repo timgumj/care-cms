@@ -1,0 +1,16 @@
+{% extends 'admin/auth_base.html.twig' %}
+{% block title %}Care Studio · {{ 'Cache'|trans }}{% endblock %}
+{% block content %}
+<h1>{{ 'Cache'|trans }}</h1>
+<p>{{ 'Page edits appear immediately. Refresh the server cache after template or configuration updates.'|trans }}</p>
+{% if error %}<p class="notice error" role="alert">{{ error|trans }}</p>{% endif %}
+{% if cache_status.pending %}<p class="notice" role="status">{{ 'A cache refresh is pending. Reload this page to complete it.'|trans }}</p>{% endif %}
+{% if cache_status.last_cleared %}<p class="notice" role="status">{{ 'Last server cache refresh'|trans }}: {{ cache_status.last_cleared|date('Y-m-d H:i:s','Europe/Vienna') }} CET/CEST</p>{% endif %}
+<form method="post" action="{{ path('admin_cache') }}">
+<input type="hidden" name="_csrf_token" value="{{ csrf_token('cache_refresh') }}">
+<button class="submit" type="submit">{{ 'Clear website cache'|trans }}</button>
+</form>
+<p class="hint">{{ 'The cache rebuilds automatically. Pages, images, settings, login sessions and security limits are preserved.'|trans }}</p>
+<p class="hint">{{ 'Browser and third-party caches are separate. Updated CSS and images use new filenames or version numbers.'|trans }}</p>
+<p><a href="{{ path('admin') }}">{{ 'Back to dashboard'|trans }}</a></p>
+{% endblock %}

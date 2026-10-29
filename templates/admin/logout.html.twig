@@ -1,0 +1,6 @@
+{% extends 'admin/auth_base.html.twig' %}
+{% block content %}
+<h1>{{ 'Sign out'|trans }}</h1>
+<p>{{ 'Confirm sign out to return to the login page.'|trans }}</p>
+<form action="{{ path('app_logout') }}" method="post"><input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}"><button class="submit" type="submit">{{ 'Sign out'|trans }}</button></form>
+{% endblock %}

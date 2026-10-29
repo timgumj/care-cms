@@ -1,0 +1,22 @@
+# Original demonstration imagery
+
+Generated with the built-in image-generation tool for this project on 29 October 2026, then resized/encoded to WebP for delivery. No doctor/client photos from the supplied reference sites are included. People and practice interiors are fictional. Replace demo assets with appropriate licensed client imagery before real use.
+
+Saved project assets:
+- public/assets/starters/reception.webp (1280px; approximately 57 KB)
+- public/assets/starters/team.webp (1280px; approximately 40 KB)
+- public/assets/starters/doctor.webp (1280px; approximately 48 KB)
+
+Prompt: reception
+Create one original natural editorial architectural photograph for a fictional Austrian family medical practice website. Wide horizontal view of an ordinary welcoming reception room, light sage walls, white reception desk, pale oak flooring, a modest houseplant, daylight through tall windows, a few simple waiting chairs. No people, no text, no signage or logos, no readable documents, no luxury spa styling, no CGI sheen, no cinematic effects. Realistic understated documentary photography with believable lived-in details. Landscape composition, usable as a website hero photograph.
+
+Prompt: team
+Original editorial photograph for a fictional health practice website, two fictional adult healthcare professionals, a woman and a man in their early forties standing together in a simple Austrian clinic, wearing plain navy scrubs, naturally friendly expressions, no stethoscope prop, no logos, no text or signage, no patient records, candid understated professional photography, soft window daylight, neutral off-white background, landscape medium portrait with subjects on the right and open neutral space to the left, realistic skin texture, no glamour retouching, no stock-photo thumbs-up gestures.
+
+Prompt: practitioner
+Natural editorial photograph of a fictional female primary care practitioner in her forties, seated at a simple desk in a bright ordinary clinic, plain navy medical tunic, friendly composed expression, daylight, an unbranded closed notebook and plant, no readable text, no logos, no medical charts or patient information, no stethoscope prop. Landscape photograph with practitioner on right third and quiet bright wall and soft window area on left for website copy overlay. Understated documentary style, realistic skin texture, no glamour lighting or retouching, no CGI aesthetic.
+
+## Additional Practice photographs — built-in image generation
+- `public/assets/starters/coordinator.webp`: original fictional reception coordinator, navy scrubs, seated on telephone in a bright European clinic, landscape 3:2, daylight, no logos/text or real-person likeness. Full prompt: Generate one photorealistic original editorial website photograph for a fictional European family medical practice. Landscape 3:2 composition, bright natural daylight, pale blue and warm white reception interior with a leafy plant. A friendly fictional receptionist, woman around 45 with short brown hair, wearing navy blue scrubs, seated at a reception desk speaking into a telephone handset. Professional candid expression, realistic skin texture, hands anatomically natural. Compose subject centrally with entire head and shoulders well inside frame and generous breathing room. No logos, no writing, no certificates, no real person likeness, no watermark. High-end natural medical practice photography, not a glossy stock advertisement.
+- `public/assets/starters/consultation.webp`: original fictional consultation scene. Full prompt: Generate one original photorealistic editorial photograph for a fictional modern European family medical clinic. Landscape 3:2 image: a fictional female physician around 40 in navy blue scrubs having a calm seated conversation with an adult patient, seen three-quarter profile across a light oak desk. Bright understated consultation room, soft white walls, pale blue accents, daylight, a small green plant, no screens showing records. Warm attentive body language, realistic natural faces and hands, no exaggerated smiles, documentary quality. Both heads fully within frame with generous margins. No text, logos, signage, medical procedures, identifiable real people or watermark. Natural restrained color grading suitable for a professional healthcare website.
+Original PNGs retained under Codex generated_images. Project assets are locally served 1280px WebP derivatives.

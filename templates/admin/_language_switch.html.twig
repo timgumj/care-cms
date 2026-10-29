@@ -1,0 +1,4 @@
+<nav aria-label="{{ 'Sprache der Oberfläche'|trans }}" class="admin-language-switch">
+<a href="{{ app.request.pathInfo }}?{{ (app.request.query.all|merge({'_locale':'de'}))|url_encode }}" lang="de" {% if app.request.locale == 'de' %}aria-current="true"{% endif %}>Deutsch</a>
+<a href="{{ app.request.pathInfo }}?{{ (app.request.query.all|merge({'_locale':'en'}))|url_encode }}" lang="en" {% if app.request.locale == 'en' %}aria-current="true"{% endif %}>English</a>
+</nav>

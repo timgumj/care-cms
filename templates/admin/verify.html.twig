@@ -1,0 +1,14 @@
+{% extends 'admin/auth_base.html.twig' %}
+{% block content %}
+<h1>{{ 'Verify your login'|trans }}</h1>
+<p>{{ 'Enter the eight-digit code sent to your account email. It expires after 10 minutes.'|trans }}</p>
+{% if authenticationError %}<p class="notice error" role="alert">{{ 'The code is invalid, expired, or has reached its attempt limit.'|trans }}</p>{% endif %}
+<form action="{{ path('2fa_login_check') }}" method="post">
+<label for="code">{{ 'Email verification code'|trans }}</label>
+<input id="code" name="{{ authCodeParameterName }}" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{8}" maxlength="8" required autofocus>
+<input type="hidden" name="{{ csrfParameterName }}" value="{{ csrf_token(csrfTokenId) }}">
+<button class="submit" type="submit">{{ 'Verify and sign in'|trans }}</button>
+</form>
+<p>{{ 'Need a new code? Start again from the login page. Sending is limited to three codes per 15 minutes.'|trans }}</p>
+<form action="{{ path('app_logout') }}" method="post"><input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}"><button type="submit">{{ 'Cancel login'|trans }}</button></form>
+{% endblock %}

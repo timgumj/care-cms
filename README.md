@@ -63,4 +63,3 @@ MIT for application code, with original notices retained. Dependencies/fonts ret
 ## Publication status
 
 Source repository: https://github.com/timgumj/care-cms . A versioned downloadable release and hosted demonstration are not published yet. This is a portfolio prototype; see SECURITY.md before any real deployment.
-

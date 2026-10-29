@@ -1,0 +1,15 @@
+doctrine:
+    dbal:
+        url: '%env(resolve:DATABASE_URL)%'
+        options:
+            2: 5 # PDO::ATTR_TIMEOUT: allow a short wait for concurrent SQLite writes
+    orm:
+        auto_generate_proxy_classes: true
+        auto_mapping: true
+        mappings:
+            App:
+                type: attribute
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Entity'
+                prefix: 'App\Entity'
+                alias: App

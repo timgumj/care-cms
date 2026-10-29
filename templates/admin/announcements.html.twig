@@ -1,0 +1,18 @@
+{% extends 'admin/auth_base.html.twig' %}
+{% block title %}Care Studio · {{ 'Announcements'|trans }}{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="/assets/announcements.css?v=12">{% endblock %}
+{% block content %}<h1>{{ 'Announcements'|trans }}</h1><p>{{ 'One text-only notice on each homepage hero. Disable it to remove the box completely.'|trans }}</p>
+{% for message in app.flashes('announcement_saved') %}<p class="notice" role="status">{{ message|trans }}</p>{% endfor %}
+{% if error %}<p class="notice error" role="alert">{{ error|trans }}</p>{% endif %}
+<form method="post">
+{% for locale, label in {de:'Deutsch',en:'English'} %}{% set notice=settings[locale] %}
+<fieldset class="announcement-settings-group"><legend>{{ label }}</legend>
+<label class="announcement-enabled"><input type="checkbox" name="{{ locale }}_enabled" value="1"{% if notice.enabled %} checked{% endif %}> {{ 'Show announcement'|trans }}</label>
+<label for="{{ locale }}_title">{{ 'Announcement heading'|trans }}</label><input id="{{ locale }}_title" name="{{ locale }}_title" value="{{ notice.title }}" maxlength="80">
+<label for="{{ locale }}_text">{{ 'Short announcement text'|trans }}</label><textarea id="{{ locale }}_text" name="{{ locale }}_text" maxlength="300" rows="3">{{ notice.text }}</textarea>
+<label for="{{ locale }}_link_label">{{ 'Link label'|trans }}</label><input id="{{ locale }}_link_label" name="{{ locale }}_link_label" value="{{ notice.link_label }}" maxlength="80">
+<label for="{{ locale }}_mode">{{ 'When clicked'|trans }}</label><select id="{{ locale }}_mode" name="{{ locale }}_mode"><option value="anchor"{% if notice.mode=='anchor' %} selected{% endif %}>{{ 'Scroll to a section'|trans }}</option><option value="link"{% if notice.mode=='link' %} selected{% endif %}>{{ 'Open a link'|trans }}</option><option value="popup"{% if notice.mode=='popup' %} selected{% endif %}>{{ 'Show a popup'|trans }}</option></select>
+<label for="{{ locale }}_target">{{ 'Anchor or link destination'|trans }}</label><input id="{{ locale }}_target" name="{{ locale }}_target" value="{{ notice.target }}" maxlength="500"><p class="hint">{{ 'For the Christmas holiday section, use #weihnachtsurlaub. For other sections use their HTML ID. This field is ignored in popup mode.'|trans }}</p>
+<label for="{{ locale }}_popup_text">{{ 'Popup notification text'|trans }}</label><textarea id="{{ locale }}_popup_text" name="{{ locale }}_popup_text" maxlength="5000" rows="6">{{ notice.popup_text }}</textarea>
+</fieldset>{% endfor %}
+<input type="hidden" name="_csrf_token" value="{{ csrf_token('announcements') }}"><button class="submit" type="submit">{{ 'Save settings'|trans }}</button></form><p><a href="{{ path('admin') }}">{{ 'Back to dashboard'|trans }}</a></p>{% endblock %}

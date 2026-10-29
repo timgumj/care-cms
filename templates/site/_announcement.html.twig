@@ -1,0 +1,6 @@
+<aside class="practice-announcement" aria-label="{{ notice.title }}">
+<p class="practice-announcement__label">{{ notice.title }}</p><p class="practice-announcement__text">{{ notice.text }}</p>
+{% if notice.mode == 'popup' %}<button type="button" class="practice-announcement__link" data-announcement-open="practice-announcement-dialog" aria-haspopup="dialog">{{ notice.link_label }}</button>
+{% else %}<a class="practice-announcement__link" href="{{ notice.target }}">{{ notice.link_label }}</a>{% endif %}
+</aside>
+{% if notice.mode == 'popup' %}<dialog id="practice-announcement-dialog" class="practice-announcement-dialog" aria-labelledby="practice-announcement-heading"><button type="button" class="practice-announcement-dialog__close" data-announcement-close aria-label="{{ english ? 'Close announcement' : 'Ankündigung schließen' }}">×</button><h2 id="practice-announcement-heading">{{ notice.title }}</h2><p class="practice-announcement-dialog__body">{{ notice.popup_text }}</p></dialog>{% endif %}

@@ -1,0 +1,12 @@
+{% extends 'admin/auth_base.html.twig' %}
+{% block title %}Care Studio · {{ 'Menus'|trans }}{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="/assets/menu-editor.css?v=12"><script src="/assets/menu-editor.js?v=1" defer></script>{% endblock %}
+{% block content %}<div class="menu-editor"><h1>{{ 'Menus'|trans }}</h1><p>{{ 'Choose pages, articles or custom links. Navigation labels can differ from page titles and URLs. Drag to reorder or use the arrow buttons.'|trans }}</p>
+<nav class="menu-language-tabs" aria-label="{{ 'Menu language'|trans }}"><a href="{{ path('admin_menus',{menu_locale:'de'}) }}"{% if menu_locale=='de' %} aria-current="page"{% endif %}>Deutsch</a><a href="{{ path('admin_menus',{menu_locale:'en'}) }}"{% if menu_locale=='en' %} aria-current="page"{% endif %}>English</a></nav>
+{% for message in app.flashes('menu_saved') %}<p class="notice" role="status">{{ message|trans }}</p>{% endfor %}{% if error %}<p class="notice error" role="alert">{{ error|trans }}</p>{% endif %}
+<p class="hint">{{ 'Unpublished or trashed pages and articles stay hidden from the public menu. Custom links support HTTPS, local paths, anchors, mailto and tel.'|trans }}</p>
+<form method="post" data-menu-form><div data-menu-items>{% for item in items %}{% include 'admin/_menu_item.html.twig' with {index:loop.index0,item:item,pages:pages} %}{% endfor %}</div>
+<button type="button" class="menu-add" data-menu-add>{{ 'Add menu item'|trans }}</button>
+<input type="hidden" name="_csrf_token" value="{{ csrf_token('menus_' ~ menu_locale) }}"><button type="submit" class="submit">{{ 'Save menu'|trans }}</button></form>
+<template data-menu-template>{% include 'admin/_menu_item.html.twig' with {index:'__INDEX__',item:{title:'',type:'page',url:'',new_tab:false,button:false},pages:pages} %}</template>
+<p class="menu-editor-back"><a href="{{ path('admin') }}">{{ 'Back to dashboard'|trans }}</a></p></div>{% endblock %}

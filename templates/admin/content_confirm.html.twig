@@ -1,0 +1,10 @@
+{% extends 'admin/auth_base.html.twig' %}
+{% block content %}
+{% set labels={trash:'Move to Trash',restore:'Restore as draft',purge:'Delete permanently',english:'Create English draft'} %}
+<h1>{{ labels[operation]|trans }}</h1><p><strong>{{ page.title }}</strong><br>{{ page.path }}</p>
+{% if error %}<p class="notice error" role="alert">{{ error|trans }}</p>{% else %}
+<p>{{ {trash:'This item will leave the website and remain in Trash until you restore or permanently delete it.',restore:'This item will return as an unpublished draft. Its URL and content will be preserved.',purge:'This permanently deletes this item. It cannot be restored from Trash. Linked translations are kept.',english:'This copies the German article into an unpublished English draft. Translate the text before publishing. The German article stays unchanged.'}[operation]|trans }}</p>
+<form method="post"><input type="hidden" name="_csrf_token" value="{{ csrf_token('content_' ~ operation ~ '_' ~ page.id) }}"><button class="submit" type="submit">{{ labels[operation]|trans }}</button></form>
+{% endif %}
+<p><a href="{{ operation in ['restore','purge'] ? path('admin_trash') : path('admin') }}">{{ 'Cancel'|trans }}</a></p>
+{% endblock %}
