@@ -12,6 +12,21 @@ foreach(glob(__DIR__.'/../migrations/*.php') as $path){require_once $path;$class
 expect($db->createSchemaManager()->tablesExist(['Page','AdminUser','appointment','booking_schedule']),'Migrations incomplete');
 $mailer=new class implements Symfony\Component\Mailer\MailerInterface{public array $sent=[];public function send(Symfony\Component\Mime\RawMessage $message,?Symfony\Component\Mailer\Envelope $envelope=null):void{$this->sent[]=$message;}};
 $booking=new BookingService($db,$mailer,'Europe/Vienna','https://demo.example.test','sender@example.test');
+// Public form-token failures must remain HTTP 403 rather than triggering a login redirect.
+$csrf=new class implements Symfony\Component\Security\Csrf\CsrfTokenManagerInterface {
+ public function getToken(string $id):Symfony\Component\Security\Csrf\CsrfToken{return new Symfony\Component\Security\Csrf\CsrfToken($id,'valid-test-token');}
+ public function refreshToken(string $id):Symfony\Component\Security\Csrf\CsrfToken{return $this->getToken($id);}
+ public function removeToken(string $id):?string{return null;}
+ public function isTokenValid(Symfony\Component\Security\Csrf\CsrfToken $token):bool{return false;}
+};
+$controller=new App\Controller\BookingController();$container=new Symfony\Component\DependencyInjection\Container();$container->set('security.csrf.token_manager',$csrf);$controller->setContainer($container);
+$unusedLimiter=(new ReflectionClass(Symfony\Component\RateLimiter\RateLimiterFactory::class))->newInstanceWithoutConstructor();
+$unusedPacks=(new ReflectionClass(App\Service\StarterPacks::class))->newInstanceWithoutConstructor();
+foreach([[],['_token'=>'forged-token']] as $params){
+ try{$controller->index(Request::create('/booking/','POST',$params),$booking,$unusedLimiter,$unusedPacks);throw new RuntimeException('Public booking accepted invalid CSRF');}
+ catch(Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException $e){expect($e->getStatusCode()===403,'Incorrect public CSRF status');}
+}
+expect((int)$db->fetchOne('SELECT COUNT(*) FROM appointment')===0&&count($mailer->sent)===0,'Rejected token caused a booking or email');
 $day=new DateTimeImmutable('tomorrow',$booking->zone());while((int)$day->format('N')>5)$day=$day->modify('+1 day');$date=$day->format('Y-m-d');
 $slots=$booking->slots($date,'consultation');expect(count($slots)>0,'No working-day slots');$start=$slots[0]['timestamp'];
 expect(!$booking->slots('2026-02-30','consultation')&&!$booking->slots($date,'bad-type')&&!$booking->slots('2000-01-01','consultation'),'Invalid slot query accepted');
@@ -23,6 +38,11 @@ expect((int)$db->fetchOne('SELECT COUNT(*) FROM appointment')===1,'Overlapping b
 preg_match('~/booking/cancel/([a-f0-9]{64})~',$mailer->sent[0]->getTextBody(),$match);$token=$match[1]??'';
 expect(strlen($token)===64&&$db->fetchOne('SELECT cancel_hash FROM appointment')!==$token,'Cancellation secret stored in plaintext');
 expect($booking->cancellation($token)!==null&&!$booking->cancellation(str_repeat('a',64)),'Cancellation lookup unsafe');
+foreach([[],['_token'=>'forged-token']] as $params){
+ try{$controller->cancel($token,Request::create('/booking/cancel/'.$token,'POST',$params),$booking);throw new RuntimeException('Cancellation accepted invalid CSRF');}
+ catch(Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException $e){expect($e->getStatusCode()===403,'Incorrect cancellation CSRF status');}
+ expect($booking->cancellation($token)!==null,'Invalid CSRF cancelled the appointment');
+}
 expect($booking->cancel($token)&&!$booking->cancel($token)&&!$booking->cancellation($token),'Cancel token replay');
 expect(in_array($start,array_column($booking->slots($date,'consultation'),'timestamp'),true),'Cancelled slot not released');
 $booking->saveSettings([1,2,3,4,5],'10:00','12:00',[$date]);expect(!$booking->slots($date,'consultation'),'Blocked date offered');
