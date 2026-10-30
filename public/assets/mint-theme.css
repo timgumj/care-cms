@@ -16,3 +16,30 @@ header.pack-practice.mint-header{display:block;padding-top:20px;padding-bottom:1
 body.pack-practice .pack-site.mint-site{width:100%!important;max-width:none!important;background:var(--mint)}body.pack-practice .mint-site h1{font-size:clamp(30px,3.8vw,58px)!important;font-weight:500!important}body.pack-practice .mint-site h2{font-size:clamp(24px,2.5vw,38px)!important;font-weight:500!important}body.pack-practice .mint-site h3{font-size:22px!important}body.pack-practice .mint-card-body h2{font-size:23px!important}body.pack-practice .mint-site .mint-reading h2{font-size:26px!important}body.pack-practice .mint-site>.mint-hero,body.pack-practice .mint-site>.mint-split{padding:0!important}body.pack-practice .mint-site>.mint-titlebar{padding:45px 6%!important}body.pack-practice .mint-site>.mint-section{padding:80px 0!important}header.pack-practice.mint-header .pack-brand{font-size:30px!important}header.pack-practice .pack-menu[data-desktop-menu="hamburger"] summary{display:flex!important}body.pack-practice .mint-site .mint-kicker{font-size:14px!important}body.pack-practice .mint-footer-bottom{font-size:14px!important}body.pack-practice .mint-site .mint-note{font-size:14px!important}body.pack-practice .mint-site .pack-button{font-size:16px!important}body.pack-practice .mint-site .mint-error h1{font-size:clamp(50px,12vw,130px)!important}@media(max-width:760px){body.pack-practice .mint-site>.mint-section{padding:48px 0!important}body.pack-practice .mint-site p{font-size:16px!important}header.pack-practice.mint-header .pack-brand{font-size:25px!important}body.pack-practice .mint-site .mint-note,body.pack-practice .mint-site .mint-kicker{font-size:14px!important}body.pack-practice .mint-site .mint-split>div{padding:40px 7%}}
 
 body.pack-practice .pack-site.mint-site.mint-legal{background:var(--teal)!important;color:var(--paper)}.mint-search{margin:0;max-width:280px}.pack-practice .mint-search input{background:transparent!important}.mint-reading{line-height:1.7}
+
+/* Shared default-theme contrast, navigation and button treatments. */
+@font-face{font-family:AttilaSansSharp;src:local("AttilaSansSharp"),local("Attila Sans Sharp");font-display:swap}
+h1{font-family:AttilaSansSharp,"Hanken Grotesk",sans-serif!important}
+body.pack-practice :is(.mint-hero-copy,.mint-titlebar,.mint-legal,.mint-split:not(.light)) :is(h1,h2,h3,h4,.mint-kicker){color:#fff!important}
+body.pack-practice .mint-hero-copy{color:#fff}
+body.pack-practice :is(button,.pack-button){background:#D9ECD3!important;border-color:#244C4D;color:#244C4D!important;filter:none}
+body.pack-practice :is(button,.pack-button):hover{background:#49888A!important;border-color:#49888A;color:#fff!important;filter:none}
+body.pack-practice .mint-hero .pack-button{background:#fff!important;border-color:#fff;color:#244C4D!important}
+body.pack-practice .mint-hero .pack-button:hover{background:#D9ECD3!important;border-color:#D9ECD3;color:#244C4D!important}
+body.pack-practice .mint-split:not(.light) .pack-button{background:#D9ECD3!important;border-color:#D9ECD3;color:#244C4D!important}
+body.pack-practice .mint-split:not(.light) .pack-button:hover{background:#fff!important;border-color:#fff;color:#244C4D!important}
+header.pack-practice.mint-header .pack-booking-link{background:#49888A!important;border-color:#49888A;color:#fff!important;filter:none}
+header.pack-practice.mint-header .pack-booking-link:hover{background:#D9ECD3!important;border-color:#244C4D;color:#244C4D!important;filter:none}
+header.pack-practice.mint-header{display:block;padding-block:24px}
+.mint-header-top{margin:0;display:flex;align-items:center;justify-content:space-between;gap:30px}
+.mint-header-top>.pack-menu{margin-left:auto}
+header.pack-practice.mint-header .pack-menu .pack-language{margin-left:0}
+header.pack-practice.mint-header .pack-menu nav{justify-content:flex-end}
+header.pack-practice.mint-header .pack-menu[data-desktop-menu="hamburger"] nav{right:0;top:calc(100% + 24px)}
+body.pack-practice .mint-journey article>img,body.pack-practice .mint-grid.two>article>img{width:100%;height:clamp(230px,24vw,360px)!important;object-fit:cover;object-position:center 25%}
+@media(min-width:761px){header.pack-practice.mint-header .pack-menu nav a{font-size:18px!important;text-transform:uppercase;letter-spacing:.025em}header.pack-practice.mint-header .pack-menu nav{gap:18px}header.pack-practice.mint-header .pack-brand{font-size:27px!important}}
+@media(min-width:761px) and (max-width:1200px){header.pack-practice.mint-header{padding-inline:24px}.mint-header-top{gap:20px}header.pack-practice.mint-header .pack-menu nav{gap:12px}header.pack-practice.mint-header .pack-menu nav a{font-size:18px!important}header.pack-practice.mint-header .pack-brand{font-size:22px!important}.mint-header .pack-brand small{max-width:145px}}
+@media(max-width:1050px) and (min-width:761px){.mint-header-top{flex-wrap:wrap}.mint-header-top>.pack-menu{width:100%;margin:0}header.pack-practice.mint-header .pack-menu nav{justify-content:flex-start;flex-wrap:wrap}}
+@media(max-width:760px){header.pack-practice.mint-header{display:block;padding:18px 6%}.mint-header-top{display:flex;gap:16px}.mint-header-top>.pack-menu{width:auto;margin-left:auto}header.pack-practice.mint-header .pack-menu[open] nav{top:135px;right:0}.pack-practice .mint-journey article>img,.pack-practice .mint-grid.two>article>img{height:260px!important}}
+
+body.pack-practice .mint-footer-bottom{margin-inline:-9.52380952%}@media(max-width:760px){body.pack-practice .mint-footer-bottom{margin-inline:-8.13953488%}}

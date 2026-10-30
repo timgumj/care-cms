@@ -20,7 +20,7 @@ class EditorAssetsController extends AbstractController
         $html=$page?->headExtra ?? '';
         $doc=new \DOMDocument();@$doc->loadHTML('<?xml encoding="UTF-8">'.$html);
         $styles=[];foreach($doc->getElementsByTagName('link') as $link)if($link->getAttribute('rel')==='stylesheet')$styles[]=$link->getAttribute('href');
-        $styles[]='/assets/mint-theme.css?v=1';$styles[]='/assets/hanken.css?v=1';
+        $styles[]='/assets/mint-theme.css?v=2';$styles[]='/assets/hanken.css?v=2';
         $css=[];foreach($doc->getElementsByTagName('style') as $style)$css[]=$style->textContent;
         return $this->json(['styles'=>$styles,'css'=>implode("\n",$css)],200,['Cache-Control'=>'private, no-store']);
     }
@@ -38,12 +38,12 @@ class EditorAssetsController extends AbstractController
         if(!$this->uploadLimiter->create((string)$this->getUser()->getUserIdentifier())->consume()->isAccepted())return $this->json(['error'=>$translator->trans('Too many image uploads. Please try again later.')],429);
         if(!extension_loaded('gd'))return $this->json(['error'=>$translator->trans('Image processing is unavailable. Please enable the PHP GD extension.')],503);
         $files=$request->files->all('files');
-        if(!$files || count($files)>10)return $this->json(['error'=>$translator->trans('Bitte wählen Sie 1 bis 10 Bilder aus.')],422);
+        if(!$files || count($files)>10)return $this->json(['error'=>$translator->trans('Bitte w�hlen Sie 1 bis 10 Bilder aus.')],422);
         $allowed=['image/jpeg'=>'jpg','image/png'=>'png','image/webp'=>'webp','image/gif'=>'gif'];$ready=[];
         foreach($files as $file){
-            if(!$file instanceof UploadedFile || !$file->isValid() || $file->getSize()>5*1024*1024)return $this->json(['error'=>$translator->trans('Ein Bild darf höchstens 5 MB groß sein.')],422);
+            if(!$file instanceof UploadedFile || !$file->isValid() || $file->getSize()>5*1024*1024)return $this->json(['error'=>$translator->trans('Ein Bild darf h�chstens 5 MB gro� sein.')],422);
             $mime=$file->getMimeType();$info=@getimagesize($file->getPathname());
-            if(!isset($allowed[$mime]) || !$info || $info[0]>12000 || $info[1]>12000 || $info[0]*$info[1]>16000000)return $this->json(['error'=>$translator->trans('Erlaubt sind JPG, PNG, WebP und GIF bis 12.000 × 12.000 Pixel.')],422);
+            if(!isset($allowed[$mime]) || !$info || $info[0]>12000 || $info[1]>12000 || $info[0]*$info[1]>16000000)return $this->json(['error'=>$translator->trans('Erlaubt sind JPG, PNG, WebP und GIF bis 12.000 � 12.000 Pixel.')],422);
             $ready[]=[$file,$allowed[$mime],$info];
         }
         $dest=$this->root.'/public/uploads/editor';if(!is_dir($dest))mkdir($dest,0755,true);

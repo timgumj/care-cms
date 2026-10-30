@@ -8,11 +8,11 @@ use Twig\Environment;
 final class StarterPacks
 {
  public const CATALOG=[
-  'practice'=>['name'=>'Practice','subtitle'=>'Mint & teal · Contemporary practice','brand'=>'Praxis Morgen','image'=>'team','color'=>'#d9ecd3'],
-  'atelier'=>['name'=>'Atelier','subtitle'=>'Navy & brass Â· Group practice','brand'=>'Praxis am Park','image'=>'team','color'=>'#243c57'],
-  'clarity'=>['name'=>'Clarity','subtitle'=>'Blue & white Â· General practice','brand'=>'Praxis West','image'=>'doctor','color'=>'#203f73'],
-  'linden'=>['name'=>'Linden','subtitle'=>'Sage & cream Â· Family practice','brand'=>'Praxis Linden','image'=>'reception','color'=>'#687b49'],
-  'forma'=>['name'=>'Forma','subtitle'=>'Ink & stone Â· Independent practice','brand'=>'Praxis Mitte','image'=>'reception','color'=>'#333f3a'],
+  'practice'=>['name'=>'Practice','subtitle'=>'Mint & teal � Contemporary practice','brand'=>'Praxis Morgen','image'=>'team','color'=>'#d9ecd3'],
+  'atelier'=>['name'=>'Atelier','subtitle'=>'Navy & brass · Group practice','brand'=>'Praxis am Park','image'=>'team','color'=>'#243c57'],
+  'clarity'=>['name'=>'Clarity','subtitle'=>'Blue & white · General practice','brand'=>'Praxis West','image'=>'doctor','color'=>'#203f73'],
+  'linden'=>['name'=>'Linden','subtitle'=>'Sage & cream · Family practice','brand'=>'Praxis Linden','image'=>'reception','color'=>'#687b49'],
+  'forma'=>['name'=>'Forma','subtitle'=>'Ink & stone · Independent practice','brand'=>'Praxis Mitte','image'=>'reception','color'=>'#333f3a'],
  ];
  public function __construct(private EntityManagerInterface $em,private Environment $twig,private MenuSettings $menus,#[Autowire('%env(DEFAULT_URI)%')] private string $baseUri,private ?AppearanceSettings $appearance=null){}
  public function all():array{try{return $this->em->getConnection()->fetchAllAssociative('SELECT * FROM starter_site ORDER BY created_at DESC');}catch(TableNotFoundException){return [];}}
@@ -25,7 +25,7 @@ final class StarterPacks
  }
  public function create(string $key,string $name):array{
   if(!isset(self::CATALOG[$key]))throw new \DomainException('Unknown starter pack.');
-  $name=trim($name);if(mb_strlen($name)<2||mb_strlen($name)>100||preg_match('/[\x00-\x1f\x7f]/',$name))throw new \DomainException('Enter a site name, 2â€“100 characters.');
+  $name=trim($name);if(mb_strlen($name)<2||mb_strlen($name)>100||preg_match('/[\x00-\x1f\x7f]/',$name))throw new \DomainException('Enter a site name, 2–100 characters.');
   $id=bin2hex(random_bytes(8));$site=['id'=>$id,'pack_key'=>$key,'name'=>$name,'prefix'=>'/sites/'.$id.'/','active'=>0,'created_at'=>time()];
   $this->em->wrapInTransaction(function()use($site){
    $db=$this->em->getConnection();$db->executeStatement('UPDATE site_design SET id=id WHERE id=1');
@@ -49,10 +49,10 @@ final class StarterPacks
  public function deactivate():void{$this->em->getConnection()->executeStatement('UPDATE starter_site SET active=0 WHERE active=1');}
  public function sample(string $key,string $locale='en-AT',string $section='home',?string $name=null,string $prefix='/'):Page{
   if(!isset(self::CATALOG[$key])||!in_array($section,['home','about','services','contact','planner','privacy','terms','cookies','offers'],true))throw new \DomainException('Invalid starter template.');
-  $en=str_starts_with($locale,'en');$page=new Page();$page->path=$prefix.($en?'en/':'').($section==='home'?'':$section.'/');$page->locale=$locale;$page->kind='Seite';$page->published=false;$page->bodyClass='pack-'.$key;$page->title=($section==='home'?($name??self::CATALOG[$key]['brand']):['about'=>$en?'About the practice':'Ãœber die Praxis','services'=>$en?'Services':'Leistungen','contact'=>$en?'Contact & hours':'Kontakt & Ã–ffnungszeiten','privacy'=>$en?'Privacy policy':'Datenschutzerklärung','terms'=>$en?'Terms & conditions':'Nutzungsbedingungen','cookies'=>$en?'Cookie policy':'Cookie-Richtlinie','offers'=>$en?'Practice programmes':'Praxisangebote','planner'=>$en?'Calendar & appointments':'Kalender & Termine'][$section]);$page->description=$en?'Fictional practice starter â€” edit this content for your own project.':'Fiktive Praxis-Vorlage â€” bearbeiten Sie diese Inhalte fÃ¼r Ihr Projekt.';$page->canonical=rtrim($this->baseUri,'/').$page->path;
+  $en=str_starts_with($locale,'en');$page=new Page();$page->path=$prefix.($en?'en/':'').($section==='home'?'':$section.'/');$page->locale=$locale;$page->kind='Seite';$page->published=false;$page->bodyClass='pack-'.$key;$page->title=($section==='home'?($name??self::CATALOG[$key]['brand']):['about'=>$en?'About the practice':'Über die Praxis','services'=>$en?'Services':'Leistungen','contact'=>$en?'Contact & hours':'Kontakt & Öffnungszeiten','privacy'=>$en?'Privacy policy':'Datenschutzerkl�rung','terms'=>$en?'Terms & conditions':'Nutzungsbedingungen','cookies'=>$en?'Cookie policy':'Cookie-Richtlinie','offers'=>$en?'Practice programmes':'Praxisangebote','planner'=>$en?'Calendar & appointments':'Kalender & Termine'][$section]);$page->description=$en?'Fictional practice starter — edit this content for your own project.':'Fiktive Praxis-Vorlage — bearbeiten Sie diese Inhalte für Ihr Projekt.';$page->canonical=rtrim($this->baseUri,'/').$page->path;
   $displayName=in_array($name,['Practice default','Practice mint default'],true)?'Praxis Morgen':$name;
   $data=['pack'=>self::CATALOG[$key],'key'=>$key,'english'=>$en,'brand'=>$displayName??self::CATALOG[$key]['brand'],'base'=>$prefix,'section'=>$section];
-  $page->content=$this->twig->render('starters/'.(in_array($section,['privacy','terms','cookies'],true)?'policy':($section==='home'?$key:($key==='practice'?'practice-inside':'inside'))).'.html.twig',$data);$page->footerHtml=$this->twig->render('starters/footer.html.twig',$data);$page->headExtra='<link rel="stylesheet" href="/assets/starter-packs.css?v=14"><link rel="stylesheet" href="/theme/fonts.css"><link rel="stylesheet" href="/assets/mint-theme.css?v=1">';return $page;
+  $page->content=$this->twig->render('starters/'.(in_array($section,['privacy','terms','cookies'],true)?'policy':($section==='home'?$key:($key==='practice'?'practice-inside':'inside'))).'.html.twig',$data);$page->footerHtml=$this->twig->render('starters/footer.html.twig',$data);$page->headExtra='<link rel="stylesheet" href="/assets/starter-packs.css?v=14"><link rel="stylesheet" href="/theme/fonts.css"><link rel="stylesheet" href="/assets/mint-theme.css?v=2">';return $page;
  }
  public function navigation(Page $page,array $site,array $languageLinks=[]):string{
   $en=str_starts_with($page->locale,'en');$prefix=$site['prefix'];$base=str_starts_with($page->path,$prefix)?$prefix:'/';
