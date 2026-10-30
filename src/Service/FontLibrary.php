@@ -5,7 +5,7 @@ use Doctrine\DBAL\Exception\TableNotFoundException;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 final class FontLibrary
 {
- public const BUILTINS=['pack-default'=>'Inter (starter default)','inter'=>'Inter','system'=>'System sans-serif','serif'=>'Georgia / system serif','geist'=>'Geist Sans','inconsolata'=>'Inconsolata'];
+ public const BUILTINS=['pack-default'=>'Hanken Grotesk (starter default)','hanken'=>'Hanken Grotesk','inter'=>'Inter','system'=>'System sans-serif','serif'=>'Georgia / system serif','geist'=>'Geist Sans','inconsolata'=>'Inconsolata'];
  public function __construct(private Connection $db,#[Autowire('%kernel.project_dir%')] private string $root){}
  public function all():array{try{return $this->db->fetchAllAssociative('SELECT id,label,bytes FROM site_font ORDER BY created_at DESC');}catch(TableNotFoundException){return [];}}
  public function selected():array{try{return $this->db->fetchAssociative('SELECT body_font,heading_font FROM site_design WHERE id=1')?:['body_font'=>'pack-default','heading_font'=>'pack-default'];}catch(TableNotFoundException){return ['body_font'=>'pack-default','heading_font'=>'pack-default'];}}
@@ -38,10 +38,10 @@ final class FontLibrary
  public function css():string{
   $selection=$this->selected();$custom=array_column($this->all(),null,'id');$faces=[];$variables=[];
   foreach(['body_font'=>'--site-font-body','heading_font'=>'--site-font-heading'] as $key=>$variable){
-   $id=$selection[$key];$family=match($id){'system'=>'"Segoe UI", "Trebuchet MS", sans-serif','inter','pack-default'=>'Inter, sans-serif','serif'=>'Georgia, serif','geist'=>'"Geist Sans", Arial, sans-serif','inconsolata'=>'Inconsolata, monospace',default=>null};
+   $id=$selection[$key];$family=match($id){'system'=>'"Segoe UI", "Trebuchet MS", sans-serif','inter'=>'Inter, sans-serif','hanken','pack-default'=>'"Hanken Grotesk", sans-serif','serif'=>'Georgia, serif','geist'=>'"Geist Sans", Arial, sans-serif','inconsolata'=>'Inconsolata, monospace',default=>null};
    if(isset($custom[$id])){$family='"CareFont-'.$id.'"';$faces[$id]='@font-face{font-family:'.$family.';src:url("/theme/fonts/'.$id.'.woff2") format("woff2");font-display:swap;font-weight:100 900;}';}
    if($family)$variables[]=$variable.':'.$family.';';
   }
-  return '@font-face{font-family:Inter;src:url("/assets/fonts/inter-variable.woff2") format("woff2");font-weight:100 900;font-display:swap;}@font-face{font-family:"Geist Sans";src:url("/assets/fonts/geist-sans-variable.woff2") format("woff2");font-weight:100 900;font-display:swap;}@font-face{font-family:Inconsolata;src:url("/assets/fonts/inconsolata-variable.ttf") format("truetype");font-weight:200 900;font-display:swap;}'.implode('',$faces).':root{'.implode('',$variables).'}';
+  return '@font-face{font-family:"Hanken Grotesk";src:url("/assets/fonts/hanken-grotesk-variable.ttf") format("truetype");font-weight:100 900;font-display:swap;}@font-face{font-family:Inter;src:url("/assets/fonts/inter-variable.woff2") format("woff2");font-weight:100 900;font-display:swap;}@font-face{font-family:"Geist Sans";src:url("/assets/fonts/geist-sans-variable.woff2") format("woff2");font-weight:100 900;font-display:swap;}@font-face{font-family:Inconsolata;src:url("/assets/fonts/inconsolata-variable.ttf") format("truetype");font-weight:200 900;font-display:swap;}'.implode('',$faces).':root{'.implode('',$variables).'}';
  }
 }

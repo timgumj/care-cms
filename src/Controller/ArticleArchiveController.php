@@ -14,6 +14,7 @@ final class ArticleArchiveController extends AbstractController
         $repository=$em->getRepository(Page::class);
         $home=$packs->sample('practice',$locale);
         $posts=$repository->findBy(['kind'=>'Beitrag','locale'=>$locale,'published'=>true,'deletedAt'=>null],['updatedAt'=>'DESC']);
+        $category=$request->query->getString('category');if(in_array($category,['practice','planning'],true))$posts=array_values(array_filter($posts,fn($post)=>(preg_match('/preparing-first-visit|appointment-planning|follow-up-planning|finding-your-way/',$post->translationKey??'')?'planning':'practice')===$category));
         $page=clone $home;$page->title=$english?'Articles':'Artikel';$page->description=$english?'Articles from Care Studio’s practice.':'Artikel aus der Ordination Care Studio.';$page->canonical=$request->getSchemeAndHttpHost().$request->getPathInfo();$page->schema=[];$page->kind='Seite';
         $page->path=$request->getPathInfo();$presentation=$packs->contentPresentation($page,['de'=>'/artikel/','en'=>'/en/articles/']);$page=$presentation['page'];$header=$presentation['header'];
         $response=$this->render('site/page.html.twig',['page'=>$page,'header'=>$header,'alternates'=>[],'content'=>$this->renderView('site/articles.html.twig',['posts'=>$posts,'english'=>$english,'page'=>$page])]);

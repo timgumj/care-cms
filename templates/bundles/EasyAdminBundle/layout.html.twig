@@ -1,5 +1,5 @@
 {% extends '@!EasyAdmin/layout.html.twig' %}
-{% block configured_stylesheets %}{{ parent() }}<link rel="stylesheet" href="/assets/admin-theme.css?v=12"><link rel="stylesheet" href="/assets/cms-toolbar.css?v=12"><link rel="stylesheet" href="/assets/cms-workspace.css?v=12">{% set saved=app.session.remove('_editor_saved_page') %}{% if saved %}<meta name="practice-editor-saved" content="{{ saved|merge({user:app.user.id})|json_encode }}">{% endif %}{% endblock %}
+{% block configured_stylesheets %}{{ parent() }}<link rel="stylesheet" href="/assets/hanken.css?v=2"><link rel="stylesheet" href="/assets/admin-theme.css?v=12"><link rel="stylesheet" href="/assets/cms-toolbar.css?v=12"><link rel="stylesheet" href="/assets/cms-workspace.css?v=12">{% set saved=app.session.remove('_editor_saved_page') %}{% if saved %}<meta name="practice-editor-saved" content="{{ saved|merge({user:app.user.id})|json_encode }}">{% endif %}{% endblock %}
 {% block body_attr %}{{ parent() }} data-cms-backend="true"{% endblock %}
 {% block header_custom_menu_wrapper %}{% endblock %}
 {% block body_class %}{{ parent() }} cms-backend cms-has-toolbar{% endblock %}
