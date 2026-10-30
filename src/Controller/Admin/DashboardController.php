@@ -40,6 +40,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToRoute('Trash','internal:delete','admin_trash');
         yield MenuItem::linkToRoute('Announcements','internal:file-lines','admin_announcements')->setPermission('ROLE_ADMIN');
         yield MenuItem::linkToRoute('Starter packs','internal:folder-open','admin_starters')->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkToRoute('Appearance','internal:desktop','admin_appearance')->setPermission('ROLE_ADMIN');
         yield MenuItem::linkToRoute('Fonts','internal:file-lines','admin_fonts')->setPermission('ROLE_ADMIN');
         yield MenuItem::linkToRoute('Menus','internal:menu-bars','admin_menus')->setPermission('ROLE_ADMIN');
         yield MenuItem::linkToRoute('Session settings', 'internal:lock', 'admin_session_settings')->setPermission('ROLE_ADMIN');

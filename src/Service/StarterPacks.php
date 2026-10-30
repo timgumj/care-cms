@@ -8,13 +8,13 @@ use Twig\Environment;
 final class StarterPacks
 {
  public const CATALOG=[
-  'practice'=>['name'=>'Practice','subtitle'=>'White & soft blue · Personal medical practice','brand'=>'Praxis Morgen','image'=>'team','color'=>'#dfeffa'],
+  'practice'=>['name'=>'Practice','subtitle'=>'Mint & teal · Contemporary practice','brand'=>'Praxis Morgen','image'=>'team','color'=>'#d9ecd3'],
   'atelier'=>['name'=>'Atelier','subtitle'=>'Navy & brass Â· Group practice','brand'=>'Praxis am Park','image'=>'team','color'=>'#243c57'],
   'clarity'=>['name'=>'Clarity','subtitle'=>'Blue & white Â· General practice','brand'=>'Praxis West','image'=>'doctor','color'=>'#203f73'],
   'linden'=>['name'=>'Linden','subtitle'=>'Sage & cream Â· Family practice','brand'=>'Praxis Linden','image'=>'reception','color'=>'#687b49'],
   'forma'=>['name'=>'Forma','subtitle'=>'Ink & stone Â· Independent practice','brand'=>'Praxis Mitte','image'=>'reception','color'=>'#333f3a'],
  ];
- public function __construct(private EntityManagerInterface $em,private Environment $twig,private MenuSettings $menus,#[Autowire('%env(DEFAULT_URI)%')] private string $baseUri){}
+ public function __construct(private EntityManagerInterface $em,private Environment $twig,private MenuSettings $menus,#[Autowire('%env(DEFAULT_URI)%')] private string $baseUri,private ?AppearanceSettings $appearance=null){}
  public function all():array{try{return $this->em->getConnection()->fetchAllAssociative('SELECT * FROM starter_site ORDER BY created_at DESC');}catch(TableNotFoundException){return [];}}
  public function active():?array{foreach($this->all() as $site)if($site['active'])return $site;return null;}
  public function find(string $id):?array{foreach($this->all() as $site)if($site['id']===$id)return $site;return null;}
@@ -48,10 +48,11 @@ final class StarterPacks
  }
  public function deactivate():void{$this->em->getConnection()->executeStatement('UPDATE starter_site SET active=0 WHERE active=1');}
  public function sample(string $key,string $locale='en-AT',string $section='home',?string $name=null,string $prefix='/'):Page{
-  if(!isset(self::CATALOG[$key])||!in_array($section,['home','about','services','contact','planner'],true))throw new \DomainException('Invalid starter template.');
-  $en=str_starts_with($locale,'en');$page=new Page();$page->path=$prefix.($en?'en/':'').($section==='home'?'':$section.'/');$page->locale=$locale;$page->kind='Seite';$page->published=false;$page->bodyClass='pack-'.$key;$page->title=($section==='home'?($name??self::CATALOG[$key]['brand']):['about'=>$en?'About the practice':'Ãœber die Praxis','services'=>$en?'Services':'Leistungen','contact'=>$en?'Contact & hours':'Kontakt & Ã–ffnungszeiten','planner'=>$en?'Calendar & appointments':'Kalender & Termine'][$section]);$page->description=$en?'Fictional practice starter â€” edit this content for your own project.':'Fiktive Praxis-Vorlage â€” bearbeiten Sie diese Inhalte fÃ¼r Ihr Projekt.';$page->canonical=rtrim($this->baseUri,'/').$page->path;
-  $data=['pack'=>self::CATALOG[$key],'key'=>$key,'english'=>$en,'brand'=>$name??self::CATALOG[$key]['brand'],'base'=>$prefix,'section'=>$section];
-  $page->content=$this->twig->render('starters/'.($section==='home'?$key:($key==='practice'?'practice-inside':'inside')).'.html.twig',$data);$page->footerHtml=$this->twig->render('starters/footer.html.twig',$data);$page->headExtra='<link rel="stylesheet" href="/assets/starter-packs.css?v=14"><link rel="stylesheet" href="/theme/fonts.css">';return $page;
+  if(!isset(self::CATALOG[$key])||!in_array($section,['home','about','services','contact','planner','privacy','terms','cookies','offers'],true))throw new \DomainException('Invalid starter template.');
+  $en=str_starts_with($locale,'en');$page=new Page();$page->path=$prefix.($en?'en/':'').($section==='home'?'':$section.'/');$page->locale=$locale;$page->kind='Seite';$page->published=false;$page->bodyClass='pack-'.$key;$page->title=($section==='home'?($name??self::CATALOG[$key]['brand']):['about'=>$en?'About the practice':'Ãœber die Praxis','services'=>$en?'Services':'Leistungen','contact'=>$en?'Contact & hours':'Kontakt & Ã–ffnungszeiten','privacy'=>$en?'Privacy policy':'Datenschutzerklärung','terms'=>$en?'Terms & conditions':'Nutzungsbedingungen','cookies'=>$en?'Cookie policy':'Cookie-Richtlinie','offers'=>$en?'Practice programmes':'Praxisangebote','planner'=>$en?'Calendar & appointments':'Kalender & Termine'][$section]);$page->description=$en?'Fictional practice starter â€” edit this content for your own project.':'Fiktive Praxis-Vorlage â€” bearbeiten Sie diese Inhalte fÃ¼r Ihr Projekt.';$page->canonical=rtrim($this->baseUri,'/').$page->path;
+  $displayName=in_array($name,['Practice default','Practice mint default'],true)?'Praxis Morgen':$name;
+  $data=['pack'=>self::CATALOG[$key],'key'=>$key,'english'=>$en,'brand'=>$displayName??self::CATALOG[$key]['brand'],'base'=>$prefix,'section'=>$section];
+  $page->content=$this->twig->render('starters/'.(in_array($section,['privacy','terms','cookies'],true)?'policy':($section==='home'?$key:($key==='practice'?'practice-inside':'inside'))).'.html.twig',$data);$page->footerHtml=$this->twig->render('starters/footer.html.twig',$data);$page->headExtra='<link rel="stylesheet" href="/assets/starter-packs.css?v=14"><link rel="stylesheet" href="/theme/fonts.css"><link rel="stylesheet" href="/assets/mint-theme.css?v=1">';return $page;
  }
  public function navigation(Page $page,array $site,array $languageLinks=[]):string{
   $en=str_starts_with($page->locale,'en');$prefix=$site['prefix'];$base=str_starts_with($page->path,$prefix)?$prefix:'/';
@@ -67,7 +68,7 @@ final class StarterPacks
   $relative=substr($page->path,strlen($base));if(str_starts_with($relative,'en/'))$relative=substr($relative,3);
   $items=array_merge(array_values(array_filter($items,fn($item)=>!$item['button'])),array_values(array_filter($items,fn($item)=>$item['button'])));
   // Articles remain the independent CMS archive, not copied into every starter.
-  return $this->twig->render('starters/navigation.html.twig',['key'=>$site['pack_key'],'brand'=>$site['name'],'english'=>$en,'base'=>$base,'items'=>$items,'language_links'=>$languageLinks?:['de'=>$base.$relative,'en'=>$base.'en/'.$relative]]);
+  return $this->twig->render('starters/navigation.html.twig',['desktop_menu'=>$this->appearance?->mode()??'inline','key'=>$site['pack_key'],'brand'=>in_array($site['name'],['Practice default','Practice mint default'],true)?'Praxis Morgen':$site['name'],'english'=>$en,'base'=>$base,'items'=>$items,'language_links'=>$languageLinks?:['de'=>$base.$relative,'en'=>$base.'en/'.$relative]]);
  }
  public function contentPresentation(Page $source,array $languageLinks=[]):array{
   $site=$this->active();$english=str_starts_with($source->locale,'en');

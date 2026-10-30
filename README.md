@@ -63,3 +63,13 @@ MIT for application code, with original notices retained. Dependencies/fonts ret
 ## Publication status
 
 Source repository: https://github.com/timgumj/care-cms . A versioned downloadable release and hosted demonstration are not published yet. This is a portfolio prototype; see SECURITY.md before any real deployment.
+
+## Mint Practice theme update
+
+The default Practice design uses self-hosted Hanken Grotesk, mint/teal layouts, a bilingual eight-post journal, related articles, published-content search, and editable demonstration policy pages. Existing starter designs remain available.
+
+For an existing installation, run `php bin/setup.php` once. The update adds missing fictional content and installs the mint design as a separate starter site; previous pages, users and bookings are retained. It does not replace edited articles or policies. If a different starter is active, it remains selected.
+
+Administrators can choose **Appearance → Desktop navigation** for visible links or a menu button. Mobile always uses a menu button. Policy pages are examples to replace for your own organisation; they are not legal advice.
+
+Local login: `http://127.0.0.1:8020/manage/login?_locale=en`. Use the administrator you created. Local verification emails are available in Mailpit at `http://127.0.0.1:8025` after `docker compose up -d`. No default credentials are included.

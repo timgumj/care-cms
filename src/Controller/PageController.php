@@ -13,7 +13,7 @@ class PageController extends AbstractController
         $path=$request->getPathInfo();
         $active=$packs->active();$alias=false;$page=null;$defaultHeader=null;
         // First-load presentation uses a real starter even before starter setup has run.
-        if(!$active&&preg_match('~^/(en/)?(?:(about|services|contact|planner)/)?$~',$path,$match)){
+        if(!$active&&preg_match('~^/(en/)?(?:(about|services|contact|planner|privacy|terms|cookies|offers)/)?$~',$path,$match)){
             $english=!empty($match[1]);$page=$packs->sample('practice',$english?'en-AT':'de-AT',$match[2]??'home');$page->published=true;
             $defaultHeader=$packs->navigation($page,['pack_key'=>'practice','name'=>'Praxis Morgen','prefix'=>'/']);
         }
@@ -27,12 +27,12 @@ class PageController extends AbstractController
         if(!$page)throw $this->createNotFoundException();
         $request->setLocale(str_starts_with($page->locale,'en')?'en':'de');
         $alternates=$translations->forPage($page);if($alias)foreach($alternates as $language=>$translation)$alternates[$language]=$packs->present($translation,$active);
-        if($page->kind==='Beitrag'){
+        if($page->kind==='Beitrag'||in_array(trim(str_replace('/en/','/',$path),'/'),['privacy','terms','cookies','offers'],true)){
             $languageLinks=[];foreach($alternates as $language=>$translation)$languageLinks[str_starts_with($language,'en')?'en':'de']=$translation->path;
             $presentation=$packs->contentPresentation($page,$languageLinks);$page=$presentation['page'];$defaultHeader=$presentation['header'];
         }
         $content=$announcement->decorate($page);if($page->kind==='Beitrag')$content=preg_replace('~^\s*<h1\b[^>]*>.*?</h1>~is','',$content,1);
-        $response=$this->render('site/page.html.twig',['page'=>$page,'content'=>$content,'alternates'=>$alternates,'header'=>$defaultHeader??$navigation->header($page,$translations->headerForPage($page))]);
+        $response=$this->render('site/page.html.twig',['page'=>$page,'content'=>$content,'related_posts'=>array_slice(array_filter($em->getRepository(Page::class)->findBy(['kind'=>'Beitrag','locale'=>$page->locale,'published'=>true,'deletedAt'=>null],['updatedAt'=>'DESC']),fn($post)=>$post->id!==$page->id),0,3),'alternates'=>$alternates,'header'=>$defaultHeader??$navigation->header($page,$translations->headerForPage($page))]);
         $response->headers->set('Content-Language',$page->locale);
         if(!$page->published){$response->headers->set('X-Robots-Tag','noindex, nofollow');$response->headers->set('Cache-Control','private, no-store');}
         if($this->getParameter('kernel.environment')!=='prod')$response->headers->set('X-Robots-Tag','noindex, nofollow');
@@ -43,7 +43,7 @@ class PageController extends AbstractController
         $dom=new \DOMDocument('1.0','UTF-8');$root=$dom->createElementNS('http://www.sitemaps.org/schemas/sitemap/0.9','urlset');$root->setAttributeNS('http://www.w3.org/2000/xmlns/','xmlns:xhtml','http://www.w3.org/1999/xhtml');$dom->appendChild($root);
         $active=$packs->active();
         foreach($em->getRepository(Page::class)->findBy(['published'=>true,'deletedAt'=>null],['path'=>'ASC']) as $page){
-            if($active){if(str_starts_with($page->translationKey??'','starter-'.$active['id'].'-'))$page=$packs->present($page,$active);elseif(($packs->siteForPage($page)['id']??null)!==$active['id']&&$page->kind!=='Beitrag')continue;}
+            if($active){if(str_starts_with($page->translationKey??'','starter-'.$active['id'].'-'))$page=$packs->present($page,$active);elseif(($packs->siteForPage($page)['id']??null)!==$active['id']&&$page->kind!=='Beitrag'&&!str_starts_with($page->translationKey??'','demo-'))continue;}
             $url=$dom->createElement('url');$loc=$dom->createElement('loc');$loc->appendChild($dom->createTextNode($page->canonical));$url->appendChild($loc);
             $alternates=$translations->forPage($page);if($active&&str_starts_with($page->translationKey??'','starter-'.$active['id'].'-'))foreach($alternates as $locale=>$alternate)$alternates[$locale]=$packs->present($alternate,$active);
             if(count($alternates)>1)foreach($alternates as $locale=>$alternate){$link=$dom->createElementNS('http://www.w3.org/1999/xhtml','xhtml:link');$link->setAttribute('rel','alternate');$link->setAttribute('hreflang',$locale);$link->setAttribute('href',$alternate->canonical);$url->appendChild($link);}

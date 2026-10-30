@@ -2,7 +2,7 @@
  const menus=document.querySelectorAll('.demo-navigation,.pack-menu');
  const compact=window.matchMedia('(max-width:800px)');
  const packCompact=window.matchMedia('(max-width:760px)');
- function layout(){menus.forEach(menu=>menu.open=!(menu.matches('.pack-menu')?packCompact.matches:compact.matches));}
+ function layout(){menus.forEach(menu=>menu.open=!(menu.matches('.pack-menu')?(packCompact.matches||menu.dataset.desktopMenu==='hamburger'):compact.matches));}
  layout();compact.addEventListener('change',layout);packCompact.addEventListener('change',layout);
  let opener=null;
  document.addEventListener('click',event=>{
