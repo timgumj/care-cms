@@ -32,7 +32,7 @@ class PageController extends AbstractController
             $presentation=$packs->contentPresentation($page,$languageLinks);$page=$presentation['page'];$defaultHeader=$presentation['header'];
         }
         $content=$announcement->decorate($page);if($page->kind==='Beitrag')$content=preg_replace('~^\s*<h1\b[^>]*>.*?</h1>~is','',$content,1);
-        $response=$this->render('site/page.html.twig',['page'=>$page,'content'=>$content,'related_posts'=>array_slice(array_filter($em->getRepository(Page::class)->findBy(['kind'=>'Beitrag','locale'=>$page->locale,'published'=>true,'deletedAt'=>null],['updatedAt'=>'DESC']),fn($post)=>$post->id!==$page->id),0,3),'alternates'=>$alternates,'header'=>$defaultHeader??$navigation->header($page,$translations->headerForPage($page))]);
+        $response=$this->render('site/page.html.twig',['page'=>$page,'content'=>$content,'related_posts'=>$page->kind==='Beitrag'?array_slice(array_filter($em->getRepository(Page::class)->findBy(['kind'=>'Beitrag','locale'=>$page->locale,'published'=>true,'deletedAt'=>null],['updatedAt'=>'DESC']),fn($post)=>$post->id!==$page->id),0,3):[],'alternates'=>$alternates,'header'=>$defaultHeader??$navigation->header($page,$translations->headerForPage($page))]);
         $response->headers->set('Content-Language',$page->locale);
         if(!$page->published){$response->headers->set('X-Robots-Tag','noindex, nofollow');$response->headers->set('Cache-Control','private, no-store');}
         if($this->getParameter('kernel.environment')!=='prod')$response->headers->set('X-Robots-Tag','noindex, nofollow');

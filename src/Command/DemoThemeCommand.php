@@ -10,7 +10,9 @@ final class DemoThemeCommand extends Command {
  public function __construct(private StarterPacks $packs){parent::__construct();}
  protected function execute(InputInterface $input,OutputInterface $output):int {
   foreach($this->packs->all() as $site)if($site['name']==='Practice mint default'){$output->writeln('Mint theme already installed. Existing selection preserved.');return Command::SUCCESS;}
-  $active=$this->packs->active();$site=$this->packs->create('practice','Practice mint default');
+  $active=$this->packs->active();
+  foreach($this->packs->all() as $existing)if($existing['name']==='Practice default')foreach($this->packs->pages($existing['id']) as $page)if(str_ends_with($page->path,$existing['prefix'].'en/')&&str_contains($page->content,'mint-site')){$output->writeln('Fresh Practice default already uses mint. No duplicate site created.');return Command::SUCCESS;}
+  $site=$this->packs->create('practice','Practice mint default');
   if(!$active||$active['pack_key']==='practice')$this->packs->activate($site['id']);
   $output->writeln('Mint theme installed. Previous starter pages retained; other selected designs unchanged.');return Command::SUCCESS;
  }
