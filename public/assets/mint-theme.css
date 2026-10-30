@@ -43,3 +43,23 @@ body.pack-practice .mint-journey article>img,body.pack-practice .mint-grid.two>a
 @media(max-width:760px){header.pack-practice.mint-header{display:block;padding:18px 6%}.mint-header-top{display:flex;gap:16px}.mint-header-top>.pack-menu{width:auto;margin-left:auto}header.pack-practice.mint-header .pack-menu[open] nav{top:135px;right:0}.pack-practice .mint-journey article>img,.pack-practice .mint-grid.two>article>img{height:260px!important}}
 
 body.pack-practice .mint-footer-bottom{margin-inline:-9.52380952%}@media(max-width:760px){body.pack-practice .mint-footer-bottom{margin-inline:-8.13953488%}}
+
+/* Contextual buttons, booking surface, and visit planning alignment. */
+body.pack-practice :is(button,.pack-button,.pack-booking-link){border:0!important;box-shadow:none!important}
+body.pack-practice :is(.mint-card,.mint-section,.mint-related,.mint-split.light,.booking-surface) :is(button,.pack-button){background:#244C4D!important;color:#fff!important}
+body.pack-practice :is(.mint-card,.mint-section,.mint-related,.mint-split.light,.booking-surface) :is(button,.pack-button):hover{background:#49888A!important;color:#fff!important}
+body.pack-practice .mint-split:not(.light) .pack-button{background:#D9ECD3!important;color:#244C4D!important}
+body.pack-practice .mint-hero .pack-button{background:#fff!important;color:#244C4D!important}
+body.pack-practice .booking-surface,body.pack-practice .booking-surface :is(section,form,fieldset,.slots label,input,select,textarea){background:var(--mint)!important}
+body.pack-practice .booking-surface .booking-form{border:0;padding:0}
+body.pack-practice .mint-footer-bottom>nav{display:flex!important;flex-direction:row!important;align-items:center;gap:24px;flex-wrap:wrap}
+@media(min-width:761px){body.pack-practice .mint-grid.two:has(>.mint-steps){align-items:stretch}body.pack-practice .mint-grid.two:has(>.mint-steps)>img{height:0!important;min-height:100%;object-fit:cover;align-self:stretch}body.pack-practice .mint-footer-bottom>nav{flex-wrap:nowrap;white-space:nowrap}}
+html.care-menu-open,body.care-menu-open{overflow:hidden!important;overscroll-behavior:none}
+@media(max-width:760px){
+ body.pack-practice .mint-header .pack-menu[open]{position:fixed!important;inset:0!important;z-index:5000!important;width:100%!important;height:100dvh!important;margin:0!important;background:var(--mint);border:0;display:block!important}
+ body.pack-practice .mint-header .pack-menu[open]>summary{position:absolute;top:22px;right:24px;z-index:5002;display:flex!important;padding:10px;background:var(--mint)}
+ body.pack-practice .mint-header .pack-menu[open]>nav{position:absolute!important;inset:0!important;width:100%!important;min-width:0!important;height:100%!important;max-height:none!important;box-sizing:border-box;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;flex-wrap:nowrap!important;gap:20px!important;padding:90px 24px 40px!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain;touch-action:pan-y;background:var(--mint)!important;border:0!important;text-align:center}
+ body.pack-practice .mint-header .pack-menu[open]>nav>a:first-child{margin-top:auto}
+ body.pack-practice .mint-header .pack-menu[open]>nav>.pack-language{margin:0 0 auto!important;flex-shrink:0}
+ body.pack-practice .mint-header .pack-menu[open]>nav>a{flex-shrink:0}
+}

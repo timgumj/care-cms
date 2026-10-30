@@ -20,7 +20,7 @@ class EditorAssetsController extends AbstractController
         $html=$page?->headExtra ?? '';
         $doc=new \DOMDocument();@$doc->loadHTML('<?xml encoding="UTF-8">'.$html);
         $styles=[];foreach($doc->getElementsByTagName('link') as $link)if($link->getAttribute('rel')==='stylesheet')$styles[]=$link->getAttribute('href');
-        $styles[]='/assets/mint-theme.css?v=2';$styles[]='/assets/hanken.css?v=2';
+        $styles[]='/assets/mint-theme.css?v=3';$styles[]='/assets/hanken.css?v=2';
         $css=[];foreach($doc->getElementsByTagName('style') as $style)$css[]=$style->textContent;
         return $this->json(['styles'=>$styles,'css'=>implode("\n",$css)],200,['Cache-Control'=>'private, no-store']);
     }
